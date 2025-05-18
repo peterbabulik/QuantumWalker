@@ -406,7 +406,6 @@ This project's QPU experiments (initial 1D Quantum Walks, QFT-based Matrix-Vecto
     *   Transpilation using `generate_preset_pass_manager` with appropriate `optimization_level` (e.g., level 3 for deeper exploratory circuits, level 0 for short fidelity estimation circuits) and the use of `backend.target` significantly impacts final circuit quality.
 
 ### Comparison with Simulations (General QPU Observations)
-(This section remains the same as your original, as it broadly applies)
 
 The QPU experiments revealed significant differences between ideal simulations and real quantum hardware:
 

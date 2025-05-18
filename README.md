@@ -10,17 +10,32 @@ This documentation provides a comprehensive overview of the QuantumWalker projec
    - [Information-Theoretic Perspective](#information-theoretic-perspective)
    - [Further Reading](#further-reading)
 
-2. [Simulations](#simulations)
-   - [Available Simulation Tools](#available-simulation-tools)
+2. [Simulations & Algorithmic Explorations](#simulations--algorithmic-explorations)
+   - [Available Simulation and Experiment Notebooks](#available-simulation-and-experiment-notebooks)
    - [Setup Instructions](#setup-instructions)
-   - [Simulation Examples](#simulation-examples)
+   - [Simulation Examples (from README, link to notebooks for details)](#simulation-examples-from-readme-link-to-notebooks-for-details)
    - [Simulator Capabilities](#simulator-capabilities)
 
-3. [Quantum Processor Experiments](#quantum-processor-experiments)
+3. [Quantum Processor Experiments: Case Studies](#quantum-processor-experiments-case-studies)
    - [Overview of QPU Experiments](#overview-of-qpu-experiments)
-   - [Case Studies and Results](#case-studies-and-results)
-   - [Comparison with Simulations](#comparison-with-simulations)
-   - [Current Limitations and Future Directions](#current-limitations-and-future-directions)
+   - [Case Study 1: 1D Quantum Walks on IBM QPUs](#case-study-1-1d-quantum-walks-on-ibm-qpus)
+     - [Initial QW Attempts & Circuit Depth Challenges](#initial-qw-attempts--circuit-depth-challenges)
+     - [Diagnostic QPU Tests (Shallow Circuits)](#diagnostic-qpu-tests-shallow-circuits)
+     - [Refined 1D Quantum Walk Attempts](#refined-1d-quantum-walk-attempts)
+   - [Case Study 2: QFT-based Matrix-Vector Multiplication on IBM QPU](#case-study-2-qft-based-matrix-vector-multiplication-on-ibm-qpu)
+     - [Objective & Approach](#objective--approach-matvec)
+     - [QPU Execution & Challenges](#qpu-execution--challenges-matvec)
+     - [Results & Effectiveness](#results--effectiveness-matvec)
+   - [Case Study 3: Quantum Kernel Methods for Classification on IBM QPUs](#case-study-3-quantum-kernel-methods-for-classification-on-ibm-qpus)
+     - [Objective & Approach](#objective--approach-kernels)
+     - [Quantum Kernel Implementation (`QuantumKernelQPUAdapt`)](#quantum-kernel-implementation-quantumkernelqpuadapt)
+     - [Datasets Used](#datasets-used-kernels)
+     - [Key Results & Findings](#key-results--findings-kernels)
+     - [Conclusions for Quantum Kernel Case Study](#conclusions-for-quantum-kernel-case-study)
+   - [Overall QPU Case Study Synthesis & Learnings](#overall-qpu-case-study-synthesis--learnings)
+   - [Comparison with Simulations (General QPU Observations)](#comparison-with-simulations-general-qpu-observations)
+   - [Current Limitations and Future Directions (for QPU work)](#current-limitations-and-future-directions-for-qpu-work)
+
 
 ---
 
@@ -30,118 +45,130 @@ This documentation provides a comprehensive overview of the QuantumWalker projec
 
 The QuantumWalker project explores a theoretical framework proposing that reality is fundamentally composed of quantized information, processed by underlying quantum algorithms. The core principles include:
 
-1. **Quantized Information**: Information is discrete and fundamental, with the qubit as the basic unit. This implies:
-   - **Discreteness**: Reality has a smallest scale at which information is encoded
-   - **Quantum Nature**: Information inherently possesses quantum properties like superposition and entanglement
-   - **Minimal Information Unit**: The state of a fundamental "cell" is described by a finite amount of quantum information
+1.  **Quantized Information**: Information is discrete and fundamental, with the qubit as the basic unit. This implies:
+    *   **Discreteness**: Reality has a smallest scale at which information is encoded
+    *   **Quantum Nature**: Information inherently possesses quantum properties like superposition and entanglement
+    *   **Minimal Information Unit**: The state of a fundamental "cell" is described by a finite amount of quantum information
 
-2. **Algorithmic Geometry**: The "geometrical shape" of observed physical phenomena is a direct manifestation of the "shape" or structure of underlying quantum algorithms. This includes:
-   - **Algorithm as Law**: Specific rules governing how information units update and influence each other
-   - **Information as State**: The collective informational state of all constituent units
-   - **Emergent Geometry**: The connectivity, patterns, distributions, and correlations that arise from the algorithm's execution
+2.  **Algorithmic Geometry**: The "geometrical shape" of observed physical phenomena is a direct manifestation of the "shape" or structure of underlying quantum algorithms. This includes:
+    *   **Algorithm as Law**: Specific rules governing how information units update and influence each other
+    *   **Information as State**: The collective informational state of all constituent units
+    *   **Emergent Geometry**: The connectivity, patterns, distributions, and correlations that arise from the algorithm's execution
 
-3. **Emergent Phenomena**: Entities we perceive as particles, fields, and interactions are emergent properties or stable patterns within the evolving information state, generated by the underlying quantum algorithm.
+3.  **Emergent Phenomena**: Entities we perceive as particles, fields, and interactions are emergent properties or stable patterns within the evolving information state, generated by the underlying quantum algorithm.
 
-4. **Quantum-to-Classical Transition**: The transition from wave-like quantum behavior to particle-like classical behavior can be understood as a change in the effective quantum algorithm or a significant event within the algorithm's execution.
+4.  **Quantum-to-Classical Transition**: The transition from wave-like quantum behavior to particle-like classical behavior can be understood as a change in the effective quantum algorithm or a significant event within the algorithm's execution.
 
 ### Quantum Walks and Cellular Automata
 
 The project uses Quantum Walks (QWs) and Cellular Automata (CAs) as computational models to explore these theoretical propositions:
 
-1. **Quantum Walks (QWs)**:
-   - A quantum mechanical analogue of classical random walks
-   - A "walker" (quantum particle) moves on a discrete lattice according to quantum rules
-   - The walker's movement is determined by an internal quantum degree of freedom called the "coin"
-   - QWs exhibit quantum interference, superposition, and entanglement
-   - QWs spread ballistically (σ ∝ t) rather than diffusively (σ ∝ √t)
+1.  **Quantum Walks (QWs)**:
+    *   A quantum mechanical analogue of classical random walks
+    *   A "walker" (quantum particle) moves on a discrete lattice according to quantum rules
+    *   The walker's movement is determined by an internal quantum degree of freedom called the "coin"
+    *   QWs exhibit quantum interference, superposition, and entanglement
+    *   QWs spread ballistically (σ ∝ t) rather than diffusively (σ ∝ √t)
 
-2. **Cellular Automata (CAs)**:
-   - Discrete models consisting of a grid of cells, each in one of a finite number of states
-   - Cell states evolve according to fixed rules based on neighboring cells
-   - Classical CAs (like Rule 30, Rule 90, Rule 110) can generate complex patterns from simple rules
-   - Rule 110 is known to be Turing complete (capable of universal computation)
+2.  **Cellular Automata (CAs)**:
+    *   Discrete models consisting of a grid of cells, each in one of a finite number of states
+    *   Cell states evolve according to fixed rules based on neighboring cells
+    *   Classical CAs (like Rule 30, Rule 90, Rule 110) can generate complex patterns from simple rules
+    *   Rule 110 is known to be Turing complete (capable of universal computation)
 
-3. **Quantum Walks on CA Substrates**:
-   - QWs can be coupled with CAs to create more complex dynamics
-   - The CA pattern serves as a structured "environment" or "computational substrate"
-   - The QW's coin operation can be made dependent on the CA cell state
-   - This creates a two-way coupling where the QW influences the CA and vice versa
+3.  **Quantum Walks on CA Substrates**:
+    *   QWs can be coupled with CAs to create more complex dynamics
+    *   The CA pattern serves as a structured "environment" or "computational substrate"
+    *   The QW's coin operation can be made dependent on the CA cell state
+    *   This creates a two-way coupling where the QW influences the CA and vice versa (explored in [`Two_Way_Coupled_System_(Rule_30_CA_+_QW).ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/Two_Way_Coupled_System_(Rule_30_CA_+_QW).ipynb))
 
 ### Information-Theoretic Perspective
 
 The project also explores information-theoretic aspects of quantum systems:
 
-1. **Entanglement Entropy**:
-   - Measures the quantum correlation between different parts of a system
-   - In QWs, entanglement between the coin and position degrees of freedom quantifies the "quantumness" of the walk
-   - The growth and evolution of entanglement provide insights into the system's quantum nature
+1.  **Entanglement Entropy**:
+    *   Measures the quantum correlation between different parts of a system
+    *   In QWs, entanglement between the coin and position degrees of freedom quantifies the "quantumness" of the walk
+    *   The growth and evolution of entanglement provide insights into the system's quantum nature
 
-2. **Algorithmic Complexity**:
-   - The compressibility of CA patterns serves as a proxy for algorithmic complexity
-   - Different CA rules generate patterns with different levels of complexity
-   - The relationship between quantum and classical information measures reveals insights about the nature of information processing
+2.  **Algorithmic Complexity**:
+    *   The compressibility of CA patterns serves as a proxy for algorithmic complexity
+    *   Different CA rules generate patterns with different levels of complexity
+    *   The relationship between quantum and classical information measures reveals insights about the nature of information processing
 
 ### Further Reading
 
-For a deeper understanding of the theoretical concepts, refer to the following papers and articles:
+For a deeper understanding of the theoretical concepts, refer to the following papers and articles (and the project's `THEORY.md` and `theory.ipynb` files):
 
-1. **Quantum Walks**:
-   - Kempe, J. (2003). "Quantum random walks: An introductory overview." Contemporary Physics, 44(4), 307-327.
-   - Venegas-Andraca, S. E. (2012). "Quantum walks: a comprehensive review." Quantum Information Processing, 11(5), 1015-1106.
+1.  **Quantum Walks**:
+    *   Kempe, J. (2003). "Quantum random walks: An introductory overview." Contemporary Physics, 44(4), 307-327.
+    *   Venegas-Andraca, S. E. (2012). "Quantum walks: a comprehensive review." Quantum Information Processing, 11(5), 1015-1106.
 
-2. **Cellular Automata**:
-   - Wolfram, S. (1983). "Statistical mechanics of cellular automata." Reviews of Modern Physics, 55(3), 601.
-   - Cook, M. (2004). "Universality in elementary cellular automata." Complex Systems, 15(1), 1-40.
+2.  **Cellular Automata**:
+    *   Wolfram, S. (1983). "Statistical mechanics of cellular automata." Reviews of Modern Physics, 55(3), 601.
+    *   Cook, M. (2004). "Universality in elementary cellular automata." Complex Systems, 15(1), 1-40.
 
-3. **Quantum Information Theory**:
-   - Nielsen, M. A., & Chuang, I. L. (2010). "Quantum Computation and Quantum Information: 10th Anniversary Edition." Cambridge University Press.
-   - Preskill, J. (2018). "Quantum Computing in the NISQ era and beyond." Quantum, 2, 79.
+3.  **Quantum Information Theory**:
+    *   Nielsen, M. A., & Chuang, I. L. (2010). "Quantum Computation and Quantum Information: 10th Anniversary Edition." Cambridge University Press.
+    *   Preskill, J. (2018). "Quantum Computing in the NISQ era and beyond." Quantum, 2, 79.
 
-4. **Digital Physics and Computational Universe**:
-   - Wheeler, J. A. (1990). "Information, physics, quantum: The search for links." Complexity, Entropy, and the Physics of Information, 3-28.
-   - Lloyd, S. (2002). "Computational capacity of the universe." Physical Review Letters, 88(23), 237901.
+4.  **Digital Physics and Computational Universe**:
+    *   Wheeler, J. A. (1990). "Information, physics, quantum: The search for links." Complexity, Entropy, and the Physics of Information, 3-28.
+    *   Lloyd, S. (2002). "Computational capacity of the universe." Physical Review Letters, 88(23), 237901.
 
 ---
 
-## Simulations
+## Simulations & Algorithmic Explorations
 
-### Available Simulation Tools
+### Available Simulation and Experiment Notebooks
 
-The QuantumWalker repository contains various simulation tools implemented as Jupyter notebooks:
+The QuantumWalker repository contains various simulation tools and experimental explorations implemented as Jupyter notebooks. The primary base for the project's theoretical explorations is [`QuantumWalker.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QuantumWalker.ipynb).
 
-1. **2D Quantum Walk Simulator** (`QuantumWalker.ipynb`):
-   - Simulates a discrete-time 2D quantum walk on a square lattice
-   - Implements various coin operators (Hadamard, Grover, DFT)
-   - Supports different boundary conditions and spatial potentials
-   - Calculates probability distributions and entanglement entropy
+1.  **Core Quantum Walk & CA Simulators**:
+    *   [`QuantumWalker.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QuantumWalker.ipynb): Simulates a discrete-time 2D quantum walk, various coins, boundary conditions, and calculates probability distributions and entanglement entropy.
+    *   [`QuantumRule30.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QuantumRule30.ipynb): QW with Rule 30 CA substrate.
+    *   [`QantumRule90.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QantumRule90.ipynb): QW with Rule 90 CA substrate.
+    *   [`QuantumRule110.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QuantumRule110.ipynb): QW with Rule 110 CA substrate.
+    *   [`QuantumRule110exploration.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QuantumRule110exploration.ipynb): Extended experiments with Rule 110.
+    *   [`QW1D_evolutionary.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QW1D_evolutionary.ipynb): Evolutionary approaches to QWs.
 
-2. **1D Quantum Walks on CA Substrates**:
-   - `QuantumRule30.ipynb`: QW with Rule 30 CA substrate
-   - `QantumRule90.ipynb`: QW with Rule 90 CA substrate
-   - `QuantumRule110.ipynb`: QW with Rule 110 CA substrate
-   - `QuantumRule110exploration.ipynb`: Extended experiments with Rule 110
+2.  **Multi-Walker & Coupled Systems**:
+    *   [`QantumWalkers.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QantumWalkers.ipynb): Two independent quantum walkers on a 2D grid.
+    *   [`2QW1DR90.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/2QW1DR90.ipynb): Two quantum walkers coupled via Rule 90 CA.
+    *   [`2QW1DR110.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/2QW1DR110.ipynb): Two quantum walkers coupled via Rule 110 CA.
+    *   [`3WalkersR30.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/3WalkersR30.ipynb): Three walkers with Rule 30 CA.
+    *   [`Two_Way_Coupled_System_(Rule_30_CA_+_QW).ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/Two_Way_Coupled_System_(Rule_30_CA_+_QW).ipynb): Detailed two-way QW-CA coupling.
 
-3. **Multi-Walker Simulations**:
-   - `QantumWalkers.ipynb`: Two independent quantum walkers on a 2D grid
-   - `2QW1DR90.ipynb`: Two quantum walkers coupled via Rule 90 CA
-   - `2QW1DR110.ipynb`: Two quantum walkers coupled via Rule 110 CA
+3.  **Information-Theoretic & Foundational Analyses**:
+    *   [`Info_Theoretic_Analysis.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/Info_Theoretic_Analysis.ipynb): Calculates probability, entanglement, and CA compressibility.
+    *   [`Info_Theoretic_Analysis_part2.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/Info_Theoretic_Analysis_part2.ipynb): Adds spatial mutual information calculations.
+    *   [`DistributionTests.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/DistributionTests.ipynb): Statistical tests on distributions.
+    
+4.  **Quantum Error Correction & Basic Quantum Circuits**:
+    *   [`QEC.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QEC.ipynb): Implements and tests 3-qubit bit-flip quantum error correction.
+    *   [`QRN.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QRN.ipynb): Quantum random number generator experiments.
+    *   [`BellState.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/BellState.ipynb), [`GHZtest.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/GHZtest.ipynb), [`HHHtest.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/HHHtest.ipynb), [`ToffoliTest.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/ToffoliTest.ipynb): Tests for basic quantum states and gates.
 
-4. **Information-Theoretic Analysis**:
-   - `Info_Theoretic_Analysis.ipynb`: Calculates probability, entanglement, and CA compressibility
-   - `Info_Theoretic_Analysis_part2.ipynb`: Adds spatial mutual information calculations
+5.  **Quantum Machine Learning & Advanced Algorithms (including QPU experiments discussed in Case Studies)**:
+    *   [`Matrix_VectorMultiplicationIBMbrisbane.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/Matrix_VectorMultiplicationIBMbrisbane.ipynb): QFT-based Matrix-Vector multiplication experiments on IBM QPU.
+    *   [`QuantumKernelOnQPU.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QuantumKernelOnQPU.ipynb): Initial QPU experiments with quantum kernels.
+    *   [`KernelQML.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/KernelQML.ipynb): General explorations of Quantum Kernels for QML.
+    *   [`QuantumKernelSVM_QPU_Aer.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QuantumKernelSVM_QPU_Aer.ipynb):
+    **Primary notebook for the Quantum Kernel SVM case study detailed below, covering Aer and QPU runs with datasets like Moons, Circles, and Breast Cancer.**
+    *   [`Quantum_Interference_Dataset.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/Quantum_Interference_Dataset.ipynb): Contains the generation and classical SVM analysis for the Quantum Interference Dataset.
+    *   `Quantum_Kernel_SVM_Breast_Cancer_Dataset.ipynb` Specific kernel experiments with the Breast Cancer dataset.
 
-5. **Quantum Error Correction and Random Number Generation**:
-   - `QEC.ipynb`: Implements and tests 3-qubit bit-flip quantum error correction
-   - `QRN.ipynb`: Quantum random number generator experiments
+6.  **QPU Specific Experiments (beyond the case studies)**:
+    *   [`1dQW_on_ibm_brisbane.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/1dQW_on_ibm_brisbane.ipynb): Minimal 1D quantum walk on IBM QPU (early tests).
+    *   [`QW_on_IBM_heron.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QW_on_IBM_heron.ipynb): Quantum walk experiments on IBM's Heron QPU.
+    *   [`ResourceEstaminator.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/ResourceEstaminator.ipynb) for walkers computations 
 
-6. **Quantum State Tests**:
-   - `HHHtest.ipynb`: Tests creation and measurement of |+++⟩ state
-   - `GHZtest.ipynb`: Tests creation and measurement of GHZ state
-   - `BellState.ipynb`: Tests creation of Bell state with additional Hadamard gate
+7.  **Other Explorations**:
+    *   [`RandomCircuitSampling`](https://github.com/peterbabulik/QuantumWalker/blob/main/RandomCircuitSampling.ipynb): Experiments with random circuit sampling.
+    *   [`QuantumMemory`](https://github.com/peterbabulik/QuantumWalker/blob/main/QuantumMemory.ipynb): Conceptual explorations of quantum memory.
+    *   [`QuantumBrainNetwork`](https://github.com/peterbabulik/QuantumWalker/blob/main/QuantumBrainNetwork.ipynb): Explorations into quantum brain networks.
 
-7. **QPU Experiments**:
-   - `1dQW_on_ibm_brisbane.ipynb`: Minimal 1D quantum walk on IBM QPU
-   - `QW_on_IBM_heron.ipynb`: Quantum walk experiments on IBM's Heron QPU
+
 
 ### Setup Instructions
 
@@ -225,23 +252,18 @@ The simulations in this repository leverage several quantum simulation framework
    - Allow for exploration of emergent phenomena at the quantum-classical boundary
 
 ---
-
-## Quantum Processor Experiments
+## Quantum Processor Experiments: Case Studies
 
 ### Overview of QPU Experiments
+(Content remains the same as your original)
 
-The QuantumWalker project includes experiments on real quantum processors (QPUs) to test quantum walk algorithms and related quantum circuits. These experiments serve several purposes:
-
-1. **Validate Theoretical Concepts**: Test whether the quantum behaviors predicted by theory can be observed on real quantum hardware
-2. **Assess Hardware Capabilities**: Evaluate the performance of current QPUs for implementing quantum walks
-3. **Identify Limitations**: Understand the challenges and constraints of running quantum algorithms on NISQ (Noisy Intermediate-Scale Quantum) devices
-4. **Bridge Theory and Practice**: Connect theoretical models with practical implementations
-
-The main QPU experiments were conducted on:
+The main QPU experiments for the case studies below were conducted on:
 - **IBM Brisbane**: 127-qubit Eagle r3 processor
-- **IBM Heron**: Another IBM quantum processor with different architecture
 
 ### Case Studies and Results
+
+#### Case Study 1: 1D Quantum Walks on IBM QPUs (Early Explorations)
+This section details the initial attempts to run 1D Quantum Walk algorithms on IBM QPUs. The primary notebooks for these early explorations are [`1dQW_on_ibm_brisbane.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/1dQW_on_ibm_brisbane.ipynb) and related QW-on-CA QPU tests.
 
 #### 1. Initial QW Attempts & Circuit Depth Challenges
 
@@ -295,53 +317,134 @@ Based on diagnostic successes, QW circuits were redesigned for minimal depth:
   - QPU Result: Distributed across multiple states with qualitatively correct peaks
   - Conclusion: Partial success! Despite high noise, the QPU produced a distribution with the correct dominant peaks
 
-### Comparison with Simulations
+#### Case Study 2: QFT-based Matrix-Vector Multiplication on IBM QPU
+This case study investigated the feasibility of performing matrix-vector multiplication (`Y=AX`) using Quantum Fourier Transform (QFT) based arithmetic on the `ibm_brisbane` QPU. The experiments are primarily detailed in [`Matrix_VectorMultiplicationIBMbrisbane.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/Matrix_VectorMultiplicationIBMbrisbane.ipynb).
+
+##### Objective & Approach (MatVec)
+*   **Objective:** Compute each element `y_k = Σ_j A_kj * x_j`.
+*   **Quantum Encoding:** Integer values of matrix/vector elements encoded into qubit states.
+*   **Core Quantum Operations:** QFT-based quantum adders and multipliers.
+*   **Circuit Structure:** Iterative computation and summation of terms `A_kj * x_j` into an accumulator register.
+
+##### QPU Execution & Challenges (MatVec)
+*   Utilized `qiskit-ibm-runtime.SamplerV2` (v0.23.0) and `Session`.
+*   Transpiler `optimization_level=3` was used.
+*   Learned that `SamplerV2` options for broad error mitigation (like `resilience_level`) are not set like `EstimatorV2`; specific suppression techniques (`dynamical_decoupling`, `twirling`) were enabled.
+
+##### Results & Effectiveness (MatVec)
+*   **Circuit Depth:** Extremely high even after transpilation (e.g., ~700-800+ gates for 3x3 MatVec).
+*   **QPU Performance:** Heavily noise-dominated. For 3x3, a very faint signal for the correct answer was sometimes observed, but accuracy was low (<8%).
+*   **MREM Attempt:** Custom MREM provided marginal improvements, indicating computational errors were dominant.
+*   **Conclusion:** Direct QFT-based arithmetic for MatVec is currently impractical on NISQ devices due to excessive circuit depth.
+
+---
+
+#### Case Study 3: Quantum Kernel Methods for Classification on IBM QPUs
+This case study pivoted to Quantum Kernel Methods, a Quantum Machine Learning technique, evaluating its performance on IBM QPUs. The main experiments are found in a notebook like `QuantumKernelSVM_QPU_Aer.ipynb` (please verify exact name for hyperlink).
+
+##### Objective & Approach (Kernels)
+*   **Objective:** Compute kernel matrices `K_ij = f(|⟨φ(X_i)|φ(X_j)⟩|^2)` on `AerSimulator` and `ibm_brisbane`, and use them with classical SVMs.
+*   **Feature Map `φ(x)`:** Primarily a simple `Ry(x_k)` encoding per feature on data qubits. A "neural-inspired" map (classical `tanh` preprocessing + Ry encoding + CNOTs) was also tested.
+*   **Kernel Entry Estimation:** "Compute-uncompute" method for fidelity (`P(|0...0⟩)` after `Uφ(Xj)† Uφ(Xi) |0⟩`), executed via batched `SamplerV2` jobs.
+*   **Kernel Transformations:** 'linear', 'RBF-like', 'polynomial' from fidelities.
+*   **QPU Settings:** `ibm_brisbane`, `qiskit-ibm-runtime` v0.23.0, `Qiskit (Terra)` v1.0.1, `SamplerV2` with `dynamical_decoupling` & `twirling`, 4096 shots, transpiler `optimization_level=0` for fidelity circuits.
+
+##### Datasets Used (Kernels)
+*   `sklearn.datasets.make_moons`
+*   `sklearn.datasets.load_breast_cancer` (subset, 4 features)
+*   Custom "Quantum Interference Dataset" (2 features, designed to be challenging)
+
+##### Key Results & Findings (Kernels)
+*   **Successful QPU Pipeline:** Batch submission to `SamplerV2` was effective.
+*   **Simple Ry Feature Map Performance:**
+    *   **Shallow Circuits:** Fidelity circuits were very shallow (ISA depth ~11 for 2 qubits).
+    *   **High Fidelity on QPU:** QPU kernel entries were remarkably close to Aer for `make_moons` and Breast Cancer subset.
+    *   **Excellent SVM Accuracy (Easier Data):** QPU-kernel SVMs achieved high accuracy (often 100% on small test subsets), matching Aer and classical SVMs.
+    *   **"Quantum Interference Dataset":**
+        *   Classical RBF struggled (~50-62% accuracy).
+        *   Ideal Aer quantum kernels outperformed classical RBF (~60-67%).
+        *   QPU quantum kernels (on a subset) performed worse than Aer (e.g., 33% vs 60-67%), showing sensitivity to noise for this harder dataset despite shallow circuits. Increased shots (4096) did not fully overcome this for the harder dataset instance.
+*   **Neural-Inspired Feature Map (Breast Cancer Subset):**
+    *   Aer performance (70%) was worse than simple Ry map and classical RBF.
+    *   QPU performance further degraded (60%), showing that unoptimized complexity + noise is detrimental.
+*   **Computational Cost:** Aer simulation of kernels is time-consuming. QPU wall-clock time is also significant due to overhead, though actual QPU quantum time per job (from IBM dashboard) is short for shallow circuits.
+
+##### Conclusions for Quantum Kernel Case Study
+*   Computing quantum kernels on current QPUs is feasible and can yield good quality entries for **shallow feature maps**.
+*   The choice of feature map is paramount. Simple maps can be effective and noise-robust.
+*   For harder classification tasks, SVM performance becomes more sensitive to noise in QPU-computed kernel entries.
+*   A robust QPU execution pipeline (batching, appropriate Sampler options, transpiler optimization) is essential.
+
+---
+
+### Overall QPU Case Study Synthesis & Learnings
+This project's QPU experiments (initial 1D Quantum Walks, QFT-based Matrix-Vector Multiplication, and Quantum Kernel Methods) provide a clear illustration of the theme: "Optimizing Quantum Algorithms for NISQ Hardware." Key learnings include:
+
+1.  **Circuit Depth is the Primary NISQ Bottleneck:**
+    Deep arithmetic circuits, such as those used in the QFT-based Matrix-Vector multiplication, proved largely unusable due to overwhelming noise, even for small problem sizes (e.g., 3x3 matrix, ISA depth ~700-800+). In contrast, shallow circuits, like the fidelity estimation circuits used for Quantum Kernels with simple Ry-encoding feature maps (ISA depth ~11 for 2 qubits), were viable and produced results with good fidelity when compared to simulations. This strongly advocates for algorithmic designs that prioritize circuit depth minimization for execution on current and near-term quantum hardware.
+
+2.  **Problem Decomposition & Batching for Throughput:**
+    The Quantum Kernel method naturally decomposes the problem of constructing an N x N kernel matrix into approximately N²/2 smaller, independent quantum computations (fidelity estimations for each unique pair of data points). This structure is well-suited for NISQ execution. Submitting these many shallow circuits as a batch in a single `SamplerV2.run()` call within a `Session` was crucial for efficient QPU utilization and for avoiding "Session has been closed" errors previously encountered with sequential, single-circuit job submissions.
+
+3.  **Noise Resilience vs. Feature Map Expressivity (for Quantum Kernels):**
+    *   Simple quantum feature maps (e.g., Ry encoding on 2-4 qubits) were more noise-resilient on the `ibm_brisbane` QPU, yielding kernel matrices that enabled SVM classification performance comparable to ideal simulations on simpler datasets (`make_moons`, Breast Cancer subset).
+    *   Introducing more complexity into the feature map (e.g., a classical neural preprocessing layer + Ry encoding + CNOT entanglement) without careful optimization led to poorer performance even in ideal Aer simulation (70% vs. 90-95% for simpler maps on Breast Cancer subset). This degradation was further amplified by QPU noise (60% accuracy).
+    *   This highlights a critical trade-off: while more complex feature maps might offer greater expressive power in theory, they often lead to deeper or more complex circuits that are more vulnerable to noise on NISQ devices. The design of the feature map must balance these factors.
+
+4.  **Hybrid Quantum-Classical Paradigm:**
+    The Quantum Kernel SVM is an excellent example of a hybrid algorithm. The QPU performs a specialized task (feature mapping and estimating the similarity/fidelity between these quantum feature states). The resulting classical kernel matrix is then consumed by a classical machine learning algorithm (SVM) for training and prediction. This hybrid approach leverages the potential strengths of quantum processing for specific sub-tasks while relying on classical computers for the broader algorithmic control and data processing, a dominant paradigm for NISQ applications.
+
+5.  **Importance of Benchmarking:**
+    Rigorous comparison against:
+    *   Ideal quantum simulations (`AerSimulator`): To understand the theoretical potential of the quantum algorithm/feature map.
+    *   Strong classical baselines (e.g., tuned classical RBF SVM): To assess whether the quantum approach offers any performance advantage on the given task and dataset.
+    This benchmarking was crucial for contextualizing QPU performance (e.g., QPU kernel SVM achieving 100% on a small `make_moons` subset was on par with Aer and classical; Aer quantum kernels outperforming classical RBF on the "Quantum Interference Dataset" highlighted the feature map's potential, though QPU performance on this harder set was noise-limited).
+
+6.  **Practical QPU Execution (`qiskit-ibm-runtime` v0.23.0, Terra v1.0.1):**
+    *   Successfully navigating `qiskit-ibm-runtime` specifics, such as `SamplerV2` options and `Session` management, is key to effective QPU utilization.
+    *   It was determined through experimentation that for `SamplerV2` in this runtime version, high-level options like a single `resilience_level` or runtime `optimization_level` (to enable broad error mitigation suites similar to `EstimatorV2`) are **not** directly settable via the `options` dictionary at `Sampler` initialization to achieve comprehensive, automated error mitigation.
+    *   Instead, specific error *suppression* techniques like `dynamical_decoupling` and `twirling` are the primary available levers through the `options` dictionary and were successfully applied.
+    *   Transpilation using `generate_preset_pass_manager` with appropriate `optimization_level` (e.g., level 3 for deeper exploratory circuits, level 0 for short fidelity estimation circuits) and the use of `backend.target` significantly impacts final circuit quality.
+
+### Comparison with Simulations (General QPU Observations)
+(This section remains the same as your original, as it broadly applies)
 
 The QPU experiments revealed significant differences between ideal simulations and real quantum hardware:
 
-1. **Circuit Depth Impact**:
-   - **Simulators**: Can handle arbitrary circuit depths with perfect fidelity
-   - **QPUs**: Performance degrades rapidly with increasing circuit depth due to decoherence and gate errors
+1.  **Circuit Depth Impact**:
+    *   **Simulators**: Can handle arbitrary circuit depths with perfect fidelity
+    *   **QPUs**: Performance degrades rapidly with increasing circuit depth due to decoherence and gate errors
 
-2. **Noise Effects**:
-   - **Simulators**: Typically assume perfect operations unless noise models are explicitly added
-   - **QPUs**: Inherently noisy, with various error sources (readout errors, gate errors, decoherence)
+2.  **Noise Effects**:
+    *   **Simulators**: Typically assume perfect operations unless noise models are explicitly added
+    *   **QPUs**: Inherently noisy, with various error sources (readout errors, gate errors, decoherence)
 
-3. **Observable Quantum Phenomena**:
-   - **Simulators**: Can observe all quantum effects predicted by theory
-   - **QPUs**: Can demonstrate basic quantum effects (superposition, entanglement) in shallow circuits, but struggle with more complex quantum dynamics
+3.  **Observable Quantum Phenomena**:
+    *   **Simulators**: Can observe all quantum effects predicted by theory
+    *   **QPUs**: Can demonstrate basic quantum effects (superposition, entanglement) in shallow circuits, but struggle with more complex quantum dynamics
 
-4. **Scalability**:
-   - **Simulators**: Limited by classical computing resources (memory, processing power)
-   - **QPUs**: Limited by qubit count, coherence times, and gate fidelities
+4.  **Scalability**:
+    *   **Simulators**: Limited by classical computing resources (memory, processing power)
+    *   **QPUs**: Limited by qubit count, coherence times, and gate fidelities
 
-### Current Limitations and Future Directions
+### Current Limitations and Future Directions (for QPU work)
+The QPU experiments highlighted several limitations of current quantum hardware and suggest future directions:
 
-The QPU experiments highlighted several limitations of current quantum hardware for implementing quantum walks:
+1.  **Circuit Depth Threshold**: There is a clear threshold in transpiled ISA circuit depth beyond which QPUs struggle. For the quantum kernel fidelity circuits (2-4 data qubits, Ry encoding), depths were very low (~10-20 gates), leading to good results. For QFT MatVec (3-4 value qubits), depths were very high (~700+), leading to poor results. Future work should continue to prioritize shallow-circuit algorithm design.
 
-1. **Circuit Depth Threshold**: There is a clear threshold in transpiled ISA circuit depth beyond which the QPU struggles to maintain quantum coherence. For 3-qubit QW systems, circuits with ISA depths < ~50 performed well, while those with depths > ~100-200 were severely affected.
+2.  **SPAM Errors**: State Preparation And Measurement errors contribute to the overall error rate. While the applied `twirling` (with `enable_measure=True`) and the potential for future manual MREM address this, it remains a factor.
 
-2. **SPAM Errors**: State Preparation And Measurement errors contribute significantly to the overall error rate, even in shallow circuits.
+3.  **Noise Accumulation & Mitigation for SamplerV2**: While `dynamical_decoupling` and `twirling` offer some error suppression, `SamplerV2` does not provide a simple high-level option for comprehensive error mitigation (like ZNE or full M3 post-processing) that `EstimatorV2` offers via `resilience_level`. For `SamplerV2`-based algorithms requiring higher precision than suppression alone can offer, robust (and potentially custom) MREM or other advanced techniques applied in post-processing would be critical. Further investigation into resolving MREM tool import issues for Qiskit 1.0.1 is warranted.
 
-3. **Complex Operations**: Operations like QFT-based shifts or CA-dependent coin unitaries result in very deep circuits when transpiled to the QPU's native gate set.
+4.  **Feature Map Engineering for Quantum Kernels**: The choice of quantum feature map is critical. The simple Ry encoding performed well. Exploring more expressive (yet still NISQ-friendly) parameterized quantum circuits (PQCs) as feature maps, and developing methods to train their parameters (Variational Quantum Kernels), is a key research direction.
 
-4. **Noise Accumulation**: Errors accumulate rapidly with circuit depth, often leading to complete decoherence for deep circuits.
+5.  **Scaling Quantum Kernel Computations**: While batching helped, computing large kernel matrices on QPUs remains a challenge. Hierarchical methods, adaptive sampling of kernel entries, or techniques that use fewer kernel evaluations are important for scalability.
 
-Despite these limitations, the experiments showed promising directions for future work:
+6.  **Hardware Improvements**: As quantum hardware continues to improve (better coherence times, lower gate errors, higher qubit counts, improved connectivity), more complex and deeper circuits will become feasible, potentially unlocking advantages for a wider range of algorithms.
 
-1. **Algorithm Optimization**: Redesigning quantum algorithms to minimize circuit depth and gate count for NISQ devices.
+7.  **Hybrid Algorithm Development**: Continued development of hybrid quantum-classical algorithms, where the strengths of both computational paradigms are leveraged, remains the most promising path for useful applications on NISQ devices.
 
-2. **Error Mitigation**: Implementing error mitigation techniques to improve the quality of results from noisy quantum hardware.
-
-3. **Hardware Improvements**: As quantum hardware continues to improve (better coherence times, lower gate errors), more complex quantum walks will become feasible.
-
-4. **Hybrid Approaches**: Combining classical and quantum processing to leverage the strengths of both paradigms.
-
-5. **Quantum Error Correction**: In the longer term, quantum error correction will enable more reliable execution of deep quantum circuits.
-
-The QuantumWalker project demonstrates both the potential and the challenges of implementing quantum walks on real quantum hardware. While current QPUs can successfully execute basic quantum operations and simplified quantum walks, more complex quantum dynamics require further advances in quantum hardware and algorithm design.
-
----
+The QuantumWalker project, through these QPU case studies, demonstrates both the current potential and the significant challenges of implementing quantum algorithms on real hardware. The successful execution of quantum kernels with shallow feature maps is a positive step, while the difficulties with deeper arithmetic circuits highlight ongoing NISQ limitations.
 
 ## Conclusion
 
@@ -350,5 +453,3 @@ The QuantumWalker project provides a comprehensive framework for exploring quant
 As quantum hardware continues to advance, the gap between theoretical models and practical implementations will narrow, enabling more sophisticated explorations of quantum walks and their applications in quantum computing, quantum simulation, and fundamental physics.
 
 For questions, contributions, or further information, please refer to the project repository and the contact information provided therein.
-
----

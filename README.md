@@ -2,6 +2,8 @@
 
 This documentation provides a comprehensive overview of the QuantumWalker project, covering the theoretical framework, simulation tools, and quantum processor experiments.
 
+[NotebookLM](https://notebooklm.google.com/notebook/40cecccb-5cc3-4962-84fa-6fe52796f3a5/audio)
+
 ## Table of Contents
 
 1. [Theoretical Framework](#theoretical-framework)

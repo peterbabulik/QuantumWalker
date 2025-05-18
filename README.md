@@ -255,7 +255,6 @@ The simulations in this repository leverage several quantum simulation framework
 ## Quantum Processor Experiments: Case Studies
 
 ### Overview of QPU Experiments
-(Content remains the same as your original)
 
 The main QPU experiments for the case studies below were conducted on:
 - **IBM Brisbane**: 127-qubit Eagle r3 processor

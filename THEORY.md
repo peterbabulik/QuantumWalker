@@ -124,7 +124,7 @@ This case study investigated the feasibility of performing matrix-vector multipl
 
 
 #### Case Study: Quantum Kernel Methods for Classification on IBM QPUs
-This case study pivoted to Quantum Kernel Methods, a Quantum Machine Learning technique, evaluating its performance on IBM QPUs. The main experiments are found in a notebook like `QuantumKernelSVM_QPU_Aer.ipynb` (please verify exact name for hyperlink).
+This case study pivoted to Quantum Kernel Methods, a Quantum Machine Learning technique, evaluating its performance on IBM QPUs. The main experiments are found in a notebook like `QuantumKernelSVM_QPU_Aer.ipynb`.
 
 ##### Objective & Approach (Kernels)
 *   **Objective:** Compute kernel matrices `K_ij = f(|⟨φ(X_i)|φ(X_j)⟩|^2)` on `AerSimulator` and `ibm_brisbane`, and use them with classical SVMs.

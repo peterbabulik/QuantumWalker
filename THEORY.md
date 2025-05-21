@@ -1,5 +1,3 @@
-**THEORY.md (Updated Draft)**
-
 # A Computational Theory of Quantized Information and Emergent Reality:
 Explorations with Quantum Walks, Cellular Automata, and Quantum Kernel Methods on Classical Simulators and Quantum Processing Units
 

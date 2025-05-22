@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self-Optimizing QCA Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+            color: #f3f4f6; /* text-gray-100 */
+        }
+        /* Additional custom styles if needed */
+        .aspect-square { aspect-ratio: 1 / 1; }
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="w-full max-w-7xl mx-auto p-6">
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold mb-2 text-blue-400">Self-Optimizing QCA Explorer</h1>
+            <p class="text-gray-300">Automated discovery of computationally complex Quantum-Driven Cellular Automata rules.</p>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="mb-6 grid md:grid-cols-2 gap-6">
+            <!-- Evolution Controls -->
+            <div class="bg-gray-800 p-4 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <span role="img" aria-label="Play">►</span> Evolution Control
+                </h3>
+                <div class="flex gap-2 mb-3">
+                    <button id="startPauseButton" class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                        <span role="img" aria-label="Play" id="startPauseIcon">►</span> <span id="startPauseText">Start</span>
+                    </button>
+                    <button id="resetButton" class="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg transition-colors">
+                        <span role="img" aria-label="Reset">↻</span> Reset
+                    </button>
+                    <button id="quantumButton" class="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg transition-colors">
+                        <span role="img" aria-label="Quantum">⚡</span> Quantum
+                    </button>
+                </div>
+                <div id="evolutionInfo" class="text-sm text-gray-400">
+                    Step: 0 | Types: ? | Pattern: ?
+                </div>
+            </div>
+
+            <!-- Optimization Controls -->
+            <div class="bg-gray-800 p-4 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <span role="img" aria-label="Target">🎯</span> Ouroboros Loop (Optimization)
+                </h3>
+                <div class="flex gap-2 mb-3">
+                    <button id="startStopSearchButton" class="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
+                        <span role="img" aria-label="Settings">⚙️</span> <span id="startStopSearchText">Start Search</span>
+                    </button>
+                    <select id="searchStrategySelect" class="px-3 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="random">Random Search</option>
+                        <option value="gradient">Gradient Ascent</option>
+                        <option value="simulated_annealing">Simulated Annealing</option>
+                    </select>
+                </div>
+                <div id="optimizationInfo" class="text-sm text-gray-400">
+                    Opt. Step: 0 | Best Score: 0.0000 <span id="searchingIndicator" class="ml-2 text-green-400 hidden">Searching...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Best Parameters Display -->
+        <div id="bestParamsDisplay" class="mb-6 p-4 bg-green-900 bg-opacity-40 border border-green-700 rounded-lg shadow-md hidden">
+            <h3 id="bestParamsTitle" class="text-lg font-semibold mb-2 text-green-300 flex items-center gap-2">
+                <span role="img" aria-label="Trending Up">📈</span> 🏆 Best Configuration Found (Score: 0.0000)
+            </h3>
+            <div id="bestParamsDetails" class="grid md:grid-cols-3 gap-x-4 gap-y-2 text-sm text-green-200">
+                <!-- Details will be populated by JS -->
+            </div>
+        </div>
+
+        <!-- Main Grid Display -->
+        <div id="currentGridSection" class="mb-6 hidden">
+            <h3 id="currentGridTitle" class="text-lg font-semibold mb-3 flex items-center gap-2">
+                <span role="img" aria-label="Eye">👀</span> Current State
+            </h3>
+            <div class="bg-gray-800 p-4 rounded-lg shadow-md">
+                <div id="gridContainer" class="grid gap-1" style="grid-template-columns: repeat(16, minmax(0, 1fr));">
+                    <!-- Grid cells will be populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Spacetime Evolution -->
+        <div id="spacetimeSection" class="mb-6 hidden">
+            <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                <span role="img" aria-label="Bar Chart">📊</span> Spacetime Evolution (Last 25 steps)
+            </h3>
+            <div class="bg-gray-800 p-4 rounded-lg shadow-md overflow-x-auto">
+                <div id="spacetimeContainer" class="grid gap-px" style="grid-template-columns: repeat(16, minmax(12px, 1fr)); width: calc(16 * 14px);">
+                    <!-- Spacetime rows will be populated by JS -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analytics Dashboard -->
+        <div class="mt-6 p-4 bg-gray-800 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold mb-4 text-blue-300 flex items-center gap-2">
+                <span role="img" aria-label="Brain">🧠</span> Live Analytics
+            </h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Complexity Trend (Spatial Entropy) -->
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <h4 class="text-md font-semibold mb-2 text-gray-200">Complexity Trend (Entropy)</h4>
+                    <div class="h-32">
+                        <svg id="complexityChartSvg" viewBox="0 0 100 50" class="w-full h-full" preserveAspectRatio="none">
+                            <path id="complexityChartPath" stroke="#34d399" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <p id="complexityChartStatus" class="text-sm text-gray-400 flex items-center justify-center h-full">Not enough data.</p>
+                    </div>
+                    <p id="currentComplexity" class="text-sm text-gray-300 mt-2"></p>
+                </div>
+
+                <!-- LSTM Predictability -->
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <h4 class="text-md font-semibold mb-2 text-gray-200">LSTM Predictability</h4>
+                    <div class="h-32 flex flex-col justify-center">
+                        <div id="lstmAccuracyDisplay" class="hidden">
+                            <div id="lstmAccuracyValue" class="text-center text-lg font-semibold text-teal-300 mb-2">0.0%</div>
+                            <div class="w-full bg-gray-600 rounded-full h-4 mb-1">
+                                <div id="lstmAccuracyBar" class="bg-teal-500 h-4 rounded-full transition-all duration-300 ease-out" style="width: 0%;"></div>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1 text-center">(Lower score implies higher complexity)</p>
+                        </div>
+                        <p id="lstmAccuracyStatus" class="text-sm text-gray-400 text-center flex items-center justify-center h-full">Calculating...</p>
+                    </div>
+                </div>
+
+                <!-- Optimization Performance -->
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <h4 class="text-md font-semibold mb-2 text-gray-200">Optimization Trajectory (Score)</h4>
+                    <div class="h-32">
+                        <svg id="optimizationChartSvg" viewBox="0 0 100 50" class="w-full h-full" preserveAspectRatio="none">
+                            <path id="optimizationChartPath" stroke="#60a5fa" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <p id="optimizationChartStatus" class="text-sm text-gray-400 flex items-center justify-center h-full">No optimization data.</p>
+                    </div>
+                    <p id="lastOptimizationScore" class="text-sm text-gray-300 mt-2"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Global State ---
+        let isRunning = false;
+        let isOptimizing = false;
+        let step = 0;
+        let grid = [];
+        let history = [];
+        let complexityData = []; // Renamed from 'complexity' to avoid conflict
+        let lstmAccuracy = null;
+        let currentParams = null;
+        let bestParams = null;
+        let bestComplexity = 0;
+        let optimizationHistory = [];
+        let optimizationStep = 0;
+        let showQuantumState = false;
+        let quantumProbs = [];
+        let searchStrategy = 'gradient';
+        
+        let intervalRef = null;
+        let optimizationRef = null;
+        
+        const GRID_SIZE = 16;
+        const MAX_STEPS = 50; 
+        const OPTIMIZATION_SAMPLES = 30;
+
+        // --- DOM Elements ---
+        // Will be fetched in initializeApp
+
+        // --- Utility Functions (QCA Logic, Param Generation, Complexity, etc.) ---
+        const generateRandomParams = () => ({
+            types: Math.random() < 0.7 ? 2 : 3,
+            thresholds: {
+                A_to_B: 0.3 + Math.random() * 0.4,
+                B_to_A: 0.3 + Math.random() * 0.4,
+                A_to_C: Math.random() < 0.5 ? null : 0.3 + Math.random() * 0.4,
+                C_to_A: Math.random() < 0.5 ? null : 0.3 + Math.random() * 0.4,
+                B_to_C: Math.random() < 0.5 ? null : 0.3 + Math.random() * 0.4,
+                C_to_B: Math.random() < 0.5 ? null : 0.3 + Math.random() * 0.4,
+            },
+            quantumInit: ['basis_from_type', 'hadamard_all', 'mixed'][Math.floor(Math.random() * 3)],
+            interactions: generateRandomInteractions(),
+            seedPattern: ['single', 'random', 'alternating'][Math.floor(Math.random() * 3)],
+            sensitivity: 0.5 + Math.random() * 1.0
+        });
+
+        const generateRandomInteractions = () => {
+            const gates = ['I', 'CX', 'CZ', 'RZZ'];
+            const interactions = {};
+            const types = ['A', 'B', 'C']; // Assuming max 3 types
+            for (let i = 0; i < types.length; i++) {
+                for (let j = i; j < types.length; j++) {
+                    const key = types[i] + types[j];
+                    interactions[key] = gates[Math.floor(Math.random() * gates.length)];
+                }
+            }
+            return interactions;
+        };
+        
+        const perturbParams = (params, intensity = 0.1) => {
+            const newParams = JSON.parse(JSON.stringify(params));
+            Object.keys(newParams.thresholds).forEach(key => {
+                if (newParams.thresholds[key] !== null) {
+                    newParams.thresholds[key] += (Math.random() - 0.5) * intensity;
+                    newParams.thresholds[key] = Math.max(0.1, Math.min(0.9, newParams.thresholds[key]));
+                }
+            });
+            if (Math.random() < 0.2) {
+                newParams.quantumInit = ['basis_from_type', 'hadamard_all', 'mixed'][Math.floor(Math.random() * 3)];
+            }
+            if (Math.random() < 0.3) {
+                const interactionKeys = Object.keys(newParams.interactions);
+                if (interactionKeys.length > 0) {
+                    const keyToChange = interactionKeys[Math.floor(Math.random() * interactionKeys.length)];
+                    const gates = ['I', 'CX', 'CZ', 'RZZ'];
+                    newParams.interactions[keyToChange] = gates[Math.floor(Math.random() * gates.length)];
+                }
+            }
+            newParams.sensitivity += (Math.random() - 0.5) * intensity;
+            newParams.sensitivity = Math.max(0.1, Math.min(2.0, newParams.sensitivity));
+            return newParams;
+        };
+
+        const initializeGrid = (params) => {
+            const newGrid = new Array(GRID_SIZE).fill(0);
+            switch (params.seedPattern) {
+                case 'single':
+                    newGrid[Math.floor(GRID_SIZE / 2)] = 0;
+                    if (params.types > 1 && Math.floor(GRID_SIZE / 2) + 1 < GRID_SIZE) newGrid[Math.floor(GRID_SIZE / 2) + 1] = 1;
+                    break;
+                case 'random':
+                    for (let i = 0; i < GRID_SIZE; i++) newGrid[i] = Math.floor(Math.random() * params.types);
+                    break;
+                case 'alternating':
+                    for (let i = 0; i < GRID_SIZE; i++) newGrid[i] = i % params.types;
+                    break;
+            }
+            return newGrid;
+        };
+
+        const simulateQuantumLayer = (currentGrid, params) => {
+            const probs = new Array(GRID_SIZE);
+            for (let i = 0; i < GRID_SIZE; i++) {
+                const left = currentGrid[(i - 1 + GRID_SIZE) % GRID_SIZE];
+                const center = currentGrid[i];
+                const right = currentGrid[(i + 1) % GRID_SIZE];
+                let prob = 0.5;
+                switch (params.quantumInit) {
+                    case "basis_from_type":
+                        prob = center === 0 ? 0.1 : (params.types === 2 ? 0.9 : (center === 1 ? 0.5 : 0.9));
+                        break;
+                    case "hadamard_all": prob = 0.5; break;
+                    case "mixed":
+                        prob = 0.3 + 0.4 * (params.types > 1 ? (center / (params.types - 1)) : 0.5);
+                        break;
+                }
+                const leftStrength = getInteractionStrength(left, center, params.interactions);
+                const rightStrength = getInteractionStrength(center, right, params.interactions);
+                const quantumInfluence = (leftStrength + rightStrength) * params.sensitivity * Math.sin(step * 0.15 + i * 0.3) * 0.2;
+                prob += quantumInfluence;
+                probs[i] = Math.max(0.05, Math.min(0.95, prob));
+            }
+            return probs;
+        };
+
+        const getInteractionStrength = (type1, type2, interactions) => {
+            const keySorted = [type1, type2].sort().map(t => String.fromCharCode(65 + t)).join('');
+            const gate = interactions[keySorted] || "I"; // Fallback for AA, AB, etc.
+            switch (gate) {
+                case "CX": return 0.8;
+                case "CZ": return 0.6;
+                case "RZZ": return 0.4;
+                default: return 0.0;
+            }
+        };
+        
+        const applyTypeUpdateRule = (currentGrid, qProbs, params) => {
+            const newGrid = [...currentGrid];
+            for (let i = 0; i < GRID_SIZE; i++) {
+                const avgProb = (qProbs[(i - 1 + GRID_SIZE) % GRID_SIZE] + qProbs[i] + qProbs[(i + 1) % GRID_SIZE]) / 3;
+                const currentType = currentGrid[i];
+                if (params.types === 2) {
+                    if (currentType === 0 && avgProb > params.thresholds.A_to_B) newGrid[i] = 1;
+                    else if (currentType === 1 && avgProb < params.thresholds.B_to_A) newGrid[i] = 0;
+                } else if (params.types === 3) {
+                    const transitions = [
+                        { from: 0, to: 1, threshold: params.thresholds.A_to_B, condition: '>' },
+                        { from: 0, to: 2, threshold: params.thresholds.A_to_C, condition: '>' },
+                        { from: 1, to: 0, threshold: params.thresholds.B_to_A, condition: '<' },
+                        { from: 1, to: 2, threshold: params.thresholds.B_to_C, condition: '>' },
+                        { from: 2, to: 0, threshold: params.thresholds.C_to_A, condition: '<' },
+                        { from: 2, to: 1, threshold: params.thresholds.C_to_B, condition: '<' },
+                    ];
+                    for (const trans of transitions) {
+                        if (trans.threshold !== null && currentType === trans.from) {
+                            const conditionMet = trans.condition === '>' ? avgProb > trans.threshold : avgProb < trans.threshold;
+                            if (conditionMet) { newGrid[i] = trans.to; break; }
+                        }
+                    }
+                }
+            }
+            return newGrid;
+        };
+
+        const calculateSpatialEntropy = (grid) => {
+            const counts = {};
+            grid.forEach(cell => { counts[cell] = (counts[cell] || 0) + 1; });
+            let entropy = 0;
+            Object.values(counts).forEach(count => {
+                const p = count / GRID_SIZE;
+                if (p > 0) entropy -= p * Math.log2(p);
+            });
+            return entropy;
+        };
+
+        const calculateComplexityScore = (historySegment) => {
+            if (historySegment.length < 10) return 0;
+            let totalScore = 0;
+            const entropies = historySegment.map(calculateSpatialEntropy);
+            const avgEntropy = entropies.reduce((a, b) => a + b, 0) / entropies.length;
+            const entropyVariance = entropies.reduce((sum, e) => sum + Math.pow(e - avgEntropy, 2), 0) / entropies.length;
+            totalScore += (avgEntropy + entropyVariance * 2) * 0.3;
+            
+            let temporalChanges = 0;
+            for (let t = 1; t < historySegment.length; t++) {
+                let changes = 0;
+                for (let i = 0; i < GRID_SIZE; i++) if (historySegment[t][i] !== historySegment[t-1][i]) changes++;
+                temporalChanges += changes / GRID_SIZE;
+            }
+            temporalChanges /= (historySegment.length - 1);
+            totalScore += temporalChanges * 0.3;
+            
+            let irregularity = 0;
+            if (historySegment.length > 2) {
+                for (let t = 2; t < historySegment.length; t++) {
+                    let patternBreaks = 0;
+                    for (let i = 0; i < GRID_SIZE; i++) {
+                        const prev2 = historySegment[t-2][i], prev1 = historySegment[t-1][i], curr = historySegment[t][i];
+                        if (!((prev2 === prev1 && prev1 === curr) || (prev2 === curr && prev1 !== curr))) patternBreaks++;
+                    }
+                    irregularity += patternBreaks / GRID_SIZE;
+                }
+                irregularity /= (historySegment.length - 2);
+            }
+            totalScore += irregularity * 0.2;
+            
+            const uniqueStates = new Set(historySegment.map(state => state.join('')));
+            totalScore += (uniqueStates.size / historySegment.length) * 0.2;
+            return totalScore;
+        };
+
+        const estimateLSTMAccuracy = (recentHistory) => {
+            if (recentHistory.length < 15) return null;
+            let predictability = 0; const windowSize = 5;
+            for (let t = windowSize; t < recentHistory.length; t++) {
+                let correctPredictions = 0;
+                for (let i = 0; i < GRID_SIZE; i++) {
+                    const recentPattern = recentHistory.slice(t - windowSize, t).map(state => state[i]);
+                    const target = recentHistory[t][i];
+                    let predicted = recentPattern[recentPattern.length - 1];
+                    for (let period = 1; period <= Math.floor(windowSize / 2); period++) {
+                        let isPeriodic = true;
+                        for (let j = 0; j < windowSize - period; j++) if (recentPattern[j] !== recentPattern[j + period]) { isPeriodic = false; break; }
+                        if (isPeriodic) { predicted = recentPattern[windowSize - period]; break; }
+                    }
+                    if (predicted === target) correctPredictions++;
+                }
+                predictability += correctPredictions / GRID_SIZE;
+            }
+            predictability /= (recentHistory.length - windowSize);
+            const baseAccuracy = 0.4 + predictability * 0.5;
+            return Math.max(0.25, Math.min(0.95, baseAccuracy + (Math.random() - 0.5) * 0.1));
+        };
+
+        const evaluateParameters = async (params) => { // Async for potential future heavy computation
+            let evalGrid = initializeGrid(params);
+            let evalHistory = [evalGrid];
+            for (let i = 0; i < OPTIMIZATION_SAMPLES; i++) {
+                const qProbs = simulateQuantumLayer(evalGrid, params);
+                evalGrid = applyTypeUpdateRule(evalGrid, qProbs, params);
+                evalHistory.push([...evalGrid]);
+            }
+            if (evalHistory.length < 10) return 0;
+            const complexityScoreVal = calculateComplexityScore(evalHistory);
+            const lstmAcc = estimateLSTMAccuracy(evalHistory);
+            const unpredictabilityBonus = lstmAcc ? (1 - lstmAcc) * 0.5 : 0;
+            return complexityScoreVal + unpredictabilityBonus;
+        };
+
+        const optimizationStrategies = {
+            random: async () => generateRandomParams(),
+            gradient: async () => {
+                if (!bestParams) return generateRandomParams();
+                const candidates = [];
+                for (let i = 0; i < 5; i++) {
+                    const candidate = perturbParams(bestParams, 0.1 + Math.random() * 0.2);
+                    candidates.push({ params: candidate, score: await evaluateParameters(candidate) });
+                }
+                candidates.sort((a, b) => b.score - a.score);
+                return candidates[0].params;
+            },
+            simulated_annealing: async () => {
+                if (!currentParams) return generateRandomParams();
+                const temperature = Math.max(0.01, 1.0 - (optimizationStep / 200));
+                const candidate = perturbParams(currentParams, 0.05 + temperature * 0.35);
+                const candidateScore = await evaluateParameters(candidate);
+                const currentScore = await evaluateParameters(currentParams);
+                if (candidateScore > currentScore || Math.random() < Math.exp((candidateScore - currentScore) / temperature)) {
+                    return candidate;
+                }
+                return currentParams;
+            }
+        };
+
+        // --- DOM Update Functions ---
+        const getTypeColor = (type) => {
+            const colors = ['#3b82f6', '#ef4444', '#10b981', '#f97316'];
+            return colors[type] || '#6b7280';
+        };
+
+        const getCellIntensity = (qProb = 0.5) => showQuantumState ? (0.3 + 0.7 * qProb) : 1;
+
+        function renderGrid() {
+            const gridContainer = document.getElementById('gridContainer');
+            if (!gridContainer || grid.length === 0) {
+                document.getElementById('currentGridSection').classList.add('hidden');
+                return;
+            }
+            document.getElementById('currentGridSection').classList.remove('hidden');
+            gridContainer.innerHTML = '';
+            grid.forEach((cell, idx) => {
+                const cellDiv = document.createElement('div');
+                cellDiv.className = "aspect-square rounded border border-gray-700 flex items-center justify-center text-xs font-bold transition-opacity duration-150";
+                cellDiv.style.backgroundColor = getTypeColor(cell);
+                cellDiv.style.opacity = getCellIntensity(quantumProbs[idx]);
+                cellDiv.textContent = showQuantumState && quantumProbs[idx] !== undefined ? Math.round(quantumProbs[idx] * 100) : String.fromCharCode(65 + cell);
+                gridContainer.appendChild(cellDiv);
+            });
+        }
+
+        function renderSpacetimeHistory() {
+            const spacetimeContainer = document.getElementById('spacetimeContainer');
+            if (!spacetimeContainer || history.length < 5) {
+                 document.getElementById('spacetimeSection').classList.add('hidden');
+                return;
+            }
+            document.getElementById('spacetimeSection').classList.remove('hidden');
+            spacetimeContainer.innerHTML = '';
+            history.slice(-25).reverse().forEach(row => {
+                row.forEach(cell => {
+                    const cellDiv = document.createElement('div');
+                    cellDiv.className = "w-full aspect-square border-t border-l border-gray-700";
+                    cellDiv.style.backgroundColor = getTypeColor(cell);
+                    spacetimeContainer.appendChild(cellDiv);
+                });
+            });
+        }
+        
+        function createChartPathD(data, yMinProp, yMaxProp, width = 100, height = 50) {
+            if (!data || data.length < 2) return "";
+            
+            const yData = data;
+            const yMin = yMinProp !== undefined ? yMinProp : Math.min(...yData);
+            let yMax = yMaxProp !== undefined ? yMaxProp : Math.max(...yData);
+            if (yMin === yMax) yMax = yMin + 1; // Avoid division by zero if all data points are same for auto-scale
+
+            const L = yData.length;
+            const H = yMax - yMin;
+
+            let pathD;
+            if (H === 0) { // Should ideally not happen if yMax adjusted above
+                 let yPos = height / 2;
+                 pathD = `M 0 ${yPos.toFixed(2)} H ${width}`;
+            } else {
+                const P = (val) => height - ((Math.max(yMin, Math.min(yMax, val)) - yMin) / H) * height;
+                pathD = `M 0 ${P(yData[0]).toFixed(2)}`;
+                for (let i = 1; i < L; i++) {
+                    const x = (i / (L - 1)) * width;
+                    pathD += ` L ${x.toFixed(2)} ${P(yData[i]).toFixed(2)}`;
+                }
+            }
+            return pathD;
+        }
+
+        function renderAnalyticsCharts() {
+            // Complexity Chart
+            const complexityChartPathEl = document.getElementById('complexityChartPath');
+            const complexityChartStatusEl = document.getElementById('complexityChartStatus');
+            const currentComplexityEl = document.getElementById('currentComplexity');
+            if (complexityData.length > 1) {
+                complexityChartPathEl.setAttribute('d', createChartPathD(complexityData, 0, 2.0));
+                complexityChartStatusEl.classList.add('hidden');
+                complexityChartPathEl.classList.remove('hidden');
+                document.getElementById('complexityChartSvg').classList.remove('hidden');
+                currentComplexityEl.textContent = `Current: ${complexityData[complexityData.length - 1].toFixed(3)}`;
+            } else {
+                complexityChartStatusEl.classList.remove('hidden');
+                complexityChartPathEl.classList.add('hidden');
+                document.getElementById('complexityChartSvg').classList.add('hidden');
+                currentComplexityEl.textContent = '';
+            }
+
+            // LSTM Predictability
+            const lstmDisplayEl = document.getElementById('lstmAccuracyDisplay');
+            const lstmStatusEl = document.getElementById('lstmAccuracyStatus');
+            if (lstmAccuracy !== null) {
+                document.getElementById('lstmAccuracyValue').textContent = `${(lstmAccuracy * 100).toFixed(1)}%`;
+                document.getElementById('lstmAccuracyBar').style.width = `${lstmAccuracy * 100}%`;
+                lstmDisplayEl.classList.remove('hidden');
+                lstmStatusEl.classList.add('hidden');
+            } else {
+                lstmDisplayEl.classList.add('hidden');
+                lstmStatusEl.classList.remove('hidden');
+            }
+
+            // Optimization Trajectory
+            const optimizationChartPathEl = document.getElementById('optimizationChartPath');
+            const optimizationChartStatusEl = document.getElementById('optimizationChartStatus');
+            const lastOptimizationScoreEl = document.getElementById('lastOptimizationScore');
+            if (optimizationHistory.length > 1) {
+                optimizationChartPathEl.setAttribute('d', createChartPathD(optimizationHistory.map(h => h.score))); // Auto scale
+                optimizationChartStatusEl.classList.add('hidden');
+                optimizationChartPathEl.classList.remove('hidden');
+                document.getElementById('optimizationChartSvg').classList.remove('hidden');
+
+                lastOptimizationScoreEl.textContent = `Last Score: ${optimizationHistory[optimizationHistory.length - 1].score.toFixed(3)}`;
+            } else {
+                optimizationChartStatusEl.classList.remove('hidden');
+                optimizationChartPathEl.classList.add('hidden');
+                document.getElementById('optimizationChartSvg').classList.add('hidden');
+                lastOptimizationScoreEl.textContent = '';
+            }
+        }
+
+        function updateInfoDisplays() {
+            // Evolution Info
+            const paramsForInfo = bestParams || currentParams;
+            document.getElementById('evolutionInfo').textContent = `Step: ${step} | Types: ${paramsForInfo?.types || '?'} | Pattern: ${paramsForInfo?.seedPattern || '?'}`;
+            
+            // Optimization Info
+            document.getElementById('optimizationInfo').innerHTML = `Opt. Step: ${optimizationStep} | Best Score: ${bestComplexity.toFixed(4)} <span id="searchingIndicator" class="ml-2 text-green-400 ${isOptimizing ? '' : 'hidden'}">Searching...</span>`;
+            
+            // Best Params Display
+            const bestParamsDisplay = document.getElementById('bestParamsDisplay');
+            if (bestParams) {
+                bestParamsDisplay.classList.remove('hidden');
+                document.getElementById('bestParamsTitle').textContent = `🏆 Best Configuration Found (Score: ${bestComplexity.toFixed(4)})`;
+                const detailsEl = document.getElementById('bestParamsDetails');
+                detailsEl.innerHTML = `
+                    <div><strong>Structure:</strong> ${bestParams.types} types, ${bestParams.seedPattern} seed</div>
+                    <div><strong>Quantum:</strong> ${bestParams.quantumInit}, sensitivity ${bestParams.sensitivity.toFixed(2)}</div>
+                    <div><strong>Thresholds:</strong> A↔B: ${bestParams.thresholds.A_to_B.toFixed(2)}/${bestParams.thresholds.B_to_A.toFixed(2)}
+                    ${bestParams.types === 3 ? `, A↔C: ${bestParams.thresholds.A_to_C?.toFixed(2) || '-'}/${bestParams.thresholds.C_to_A?.toFixed(2) || '-'}, B↔C: ${bestParams.thresholds.B_to_C?.toFixed(2) || '-'}/${bestParams.thresholds.C_to_B?.toFixed(2) || '-'}` : ''}
+                    </div>`;
+            } else {
+                bestParamsDisplay.classList.add('hidden');
+            }
+
+            // Quantum button state
+            const quantumButton = document.getElementById('quantumButton');
+            if (showQuantumState) {
+                quantumButton.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+                quantumButton.classList.add('bg-purple-600', 'hover:bg-purple-700');
+            } else {
+                quantumButton.classList.remove('bg-purple-600', 'hover:bg-purple-700');
+                quantumButton.classList.add('bg-gray-600', 'hover:bg-gray-700');
+            }
+            const currentGridTitleEl = document.getElementById('currentGridTitle');
+            if (currentGridTitleEl) {
+                 currentGridTitleEl.innerHTML = `<span role="img" aria-label="Eye">👀</span> Current State ${showQuantumState ? "(Quantum Probabilities)" : ""}`;
+            }
+        }
+        
+        function updateAllDisplays() {
+            renderGrid();
+            renderSpacetimeHistory();
+            renderAnalyticsCharts();
+            updateInfoDisplays();
+        }
+
+        // --- Core Evolution/Optimization Logic ---
+        function evolveStep() {
+            const paramsForSim = bestParams || currentParams;
+            if (!paramsForSim) return;
+
+            quantumProbs = simulateQuantumLayer(grid, paramsForSim);
+            const newGrid = applyTypeUpdateRule(grid, quantumProbs, paramsForSim);
+            
+            history.push([...grid]); // Store old grid in history
+            if (history.length > 60) history.shift();
+            
+            grid = newGrid; // Update current grid
+
+            const currentEntropy = calculateSpatialEntropy(grid);
+            complexityData.push(currentEntropy);
+            if (complexityData.length > 60) complexityData.shift();
+            
+            if (history.length >= 15) {
+                lstmAccuracy = estimateLSTMAccuracy(history);
+            }
+            
+            step++;
+            updateAllDisplays();
+        }
+
+        async function runOptimizationStep() {
+            if (!isOptimizing) return;
+            try {
+                const nextParamsCandidate = await optimizationStrategies[searchStrategy]();
+                const score = await evaluateParameters(nextParamsCandidate);
+                
+                currentParams = nextParamsCandidate; 
+                
+                if (score > bestComplexity) {
+                    bestComplexity = score;
+                    bestParams = {...nextParamsCandidate};
+                    console.log(`🎯 New best complexity: ${score.toFixed(4)} with params:`, bestParams);
+                }
+                
+                optimizationHistory.push({ step: optimizationStep, score, params: nextParamsCandidate });
+                if (optimizationHistory.length > 100) optimizationHistory.shift();
+                
+                optimizationStep++;
+                
+                if (score > bestComplexity || grid.length === 0) { // Apply if new best or grid not initialized
+                    const paramsToVisualize = bestParams || nextParamsCandidate;
+                    grid = initializeGrid(paramsToVisualize);
+                    history = [];
+                    complexityData = [];
+                    step = 0;
+                    quantumProbs = new Array(GRID_SIZE).fill(0.5); // Reset quantumProbs display
+                }
+                updateAllDisplays();
+
+            } catch (error) {
+                console.error('Optimization step error:', error);
+                stopOptimization(); // Stop on error
+            }
+        }
+
+        // --- Control Functions ---
+        function startEvolution() {
+            if (!isRunning) {
+                isRunning = true;
+                document.getElementById('startPauseIcon').innerHTML = '❚❚';
+                document.getElementById('startPauseText').textContent = 'Pause';
+                intervalRef = setInterval(evolveStep, 200);
+                updateAllDisplays();
+            }
+        }
+
+        function pauseEvolution() {
+            isRunning = false;
+            document.getElementById('startPauseIcon').innerHTML = '►';
+            document.getElementById('startPauseText').textContent = 'Start';
+            if (intervalRef) clearInterval(intervalRef);
+            intervalRef = null;
+            updateAllDisplays();
+        }
+
+        function toggleEvolution() {
+            if (isRunning) pauseEvolution();
+            else startEvolution();
+        }
+        
+        function resetEvolution() {
+            pauseEvolution();
+            stopOptimization(); // Also stop optimization
+            step = 0;
+            history = [];
+            complexityData = [];
+            lstmAccuracy = null;
+            quantumProbs = new Array(GRID_SIZE).fill(0.5);
+            
+            // Don't reset optimization history, bestParams, bestComplexity
+            // Reset currentParams to bestParams to show the best found config
+            const paramsToInit = bestParams || generateRandomParams();
+            currentParams = {...paramsToInit}; // Use a copy
+            grid = initializeGrid(currentParams);
+            
+            updateAllDisplays();
+        }
+
+        function startOptimization() {
+            if (!isOptimizing) {
+                isOptimizing = true;
+                document.getElementById('startStopSearchText').textContent = 'Stop Search';
+                document.getElementById('startStopSearchButton').classList.remove('bg-green-600', 'hover:bg-green-700');
+                document.getElementById('startStopSearchButton').classList.add('bg-red-600', 'hover:bg-red-700');
+                document.getElementById('searchStrategySelect').disabled = true;
+                
+                optimizationStep = 0; // Reset opt step for new search
+                if (!currentParams) { // Initialize if first time
+                    currentParams = generateRandomParams();
+                    if (!bestParams) { // Set initial best if none
+                        bestParams = {...currentParams};
+                        bestComplexity = 0; // Will be evaluated
+                    }
+                }
+                optimizationRef = setInterval(runOptimizationStep, 1000);
+                runOptimizationStep(); // Run first step immediately
+                updateAllDisplays();
+            }
+        }
+
+        function stopOptimization() {
+            isOptimizing = false;
+            document.getElementById('startStopSearchText').textContent = 'Start Search';
+            document.getElementById('startStopSearchButton').classList.remove('bg-red-600', 'hover:bg-red-700');
+            document.getElementById('startStopSearchButton').classList.add('bg-green-600', 'hover:bg-green-700');
+            document.getElementById('searchStrategySelect').disabled = false;
+
+            if (optimizationRef) clearInterval(optimizationRef);
+            optimizationRef = null;
+            updateAllDisplays();
+        }
+
+        function toggleOptimization() {
+            if (isOptimizing) stopOptimization();
+            else startOptimization();
+        }
+
+        function toggleQuantumStateView() {
+            showQuantumState = !showQuantumState;
+            updateAllDisplays(); // Re-render grid and info
+        }
+
+        // --- Initialization ---
+        function initializeApp() {
+            // Fetch DOM elements
+            // (already done implicitly by using getElementById throughout)
+
+            // Event Listeners
+            document.getElementById('startPauseButton').addEventListener('click', toggleEvolution);
+            document.getElementById('resetButton').addEventListener('click', resetEvolution);
+            document.getElementById('quantumButton').addEventListener('click', toggleQuantumStateView);
+            document.getElementById('startStopSearchButton').addEventListener('click', toggleOptimization);
+            document.getElementById('searchStrategySelect').addEventListener('change', (e) => {
+                searchStrategy = e.target.value;
+            });
+            searchStrategy = document.getElementById('searchStrategySelect').value;
+
+
+            // Initial state setup
+            const initialParams = generateRandomParams();
+            currentParams = initialParams;
+            bestParams = {...initialParams}; // Also init bestParams for a starting point
+            bestComplexity = 0; // Will be evaluated if optimization starts
+            grid = initializeGrid(currentParams);
+            quantumProbs = new Array(GRID_SIZE).fill(0.5);
+
+            updateAllDisplays();
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+        window.onbeforeunload = () => { // Cleanup intervals
+            if (intervalRef) clearInterval(intervalRef);
+            if (optimizationRef) clearInterval(optimizationRef);
+        };
+
+    </script>
+</body>
+</html>

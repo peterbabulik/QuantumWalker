@@ -170,6 +170,23 @@ The QuantumWalker repository contains various simulation tools and experimental 
     *   [`QuantumMemory`](https://github.com/peterbabulik/QuantumWalker/blob/main/QuantumMemory.ipynb): Conceptual explorations of quantum memory.
     *   [`QuantumBrainNetwork`](https://github.com/peterbabulik/QuantumWalker/blob/main/QuantumBrainNetwork.ipynb): Explorations into quantum brain networks.
 
+8.  **Quantum Cellular Automata (QCA) Explorations**:
+    *   [`QCA_1_bit_adder.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QCA_1_bit_adder.ipynb): Explores the implementation of a 1-bit adder using Quantum Cellular Automata.
+    *   [`QCA_Genetic_Algorithm.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QCA_Genetic_Algorithm.ipynb): Investigates the use of genetic algorithms in the context of QCA.
+    *   [`QCA_ML_transformer.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QCA_ML_transformer.ipynb): Experiments with QCA for machine learning applications, potentially involving transformer models.
+    *   [`QCA_QCA_ML.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QCA_QCA_ML.ipynb): Further explorations in Quantum Cellular Automata based Machine Learning.
+    *   [`QCA_prime_factorization10and15.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QCA_prime_factorization10and15.ipynb): Attempts prime factorization (e.g., of 10 and 15) using QCA.
+    *   [`QNN_QCA.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QNN_QCA.ipynb): Explores Quantum Neural Networks based on QCA.
+    *   [`QNN_QCA_H2_GroundState.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QNN_QCA_H2_GroundState.ipynb): Application of QCA-based QNNs to find the ground state of the H2 molecule.
+    *   [`QNN_QCA_Scanner.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QNN_QCA_Scanner.ipynb): Tools or experiments for scanning QCA parameter spaces for QNNs.
+    *   [`QNN_QCA_Scanner2.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QNN_QCA_Scanner2.ipynb): Further developments or variations of the QCA QNN scanner.
+    *   *(See also CMA-ES section for notebooks combining QCA and CMA-ES)*
+
+9.  **Covariance Matrix Adaptation Evolution Strategy (CMA-ES) Applications**:
+    *   [`CMA_ES_QGF.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/CMA_ES_QGF.ipynb): Application of CMA-ES to Quantum Generative Filtering or similar quantum finance tasks.
+    *   [`QCA_CMAES_MaxCut.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QCA_CMAES_MaxCut.ipynb): Solves MaxCut problems using QCA optimized with CMA-ES.
+    *   [`QCA_CMAES_QKD.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QCA_CMAES_QKD.ipynb): Explores Quantum Key Distribution (QKD) protocols using QCA, potentially optimized with CMA-ES.
+    *   [`QCA_CMAES_TSP.ipynb`](https://github.com/peterbabulik/QuantumWalker/blob/main/QCA_CMAES_TSP.ipynb): Addresses the Traveling Salesperson Problem (TSP) using QCA and CMA-ES.
 
 
 ### Setup Instructions
